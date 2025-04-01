@@ -2,7 +2,10 @@ import React from 'react'
 
 const Card = ({item}) => {
   return (
-    <div>
+    <div className=''>
+        <p className='text-sm'>
+            {item.name}
+        </p>
     </div>
   )
 }

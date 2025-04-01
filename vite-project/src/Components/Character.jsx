@@ -8,19 +8,18 @@ const Character = () => {
     const [loading, setLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState(null)
 
-    console.log(data)
-
     const fetchData = async () => {
         try {
             setLoading(true)
-            const response = await fetch('https://api.potterdb.com/v1/characters')
+            const response = await fetch('https://hp-api.onrender.com/api/characters')
             const result = await response.json()
-            if(result && result.data) {
-                setData(result.data)
+            if(result && result.length) {
+                setData(result)
                 setLoading(false)
+                console.log(data)
             }
         } catch (error) {
-            setErrorMsg(error,message)
+            setErrorMsg(error.message)
             setLoading(false)
         }
     }
@@ -31,12 +30,12 @@ const Character = () => {
         }}, [])
  
   return (
-    <div>
+    <div className='grid grid-cols-4 gap-2 p-2'>
         {errorMsg && <p className='text-red-600'>{errorMsg}</p>}
         {loading && <div className='w-screen h-screen flex items-center justify-center'><RingLoader size={150}/> </div>}
         {
             data.map((item, index) => (
-                <Card key={index} item={item}/>
+                <Card key={index} item={item} />
             ))
         }
         
