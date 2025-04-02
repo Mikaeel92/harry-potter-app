@@ -7,6 +7,13 @@ const Character = () => {
     const [data, setData] = useState([]) 
     const [loading, setLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState(null)
+    const [input, setInput] = useState('')
+    const [filteredData, setFilteredData] = useState([])
+
+    useEffect(() => {
+        if(!data || data.length === 0) {
+            fetchData()
+        }}, [])
 
     const fetchData = async () => {
         try {
@@ -15,6 +22,7 @@ const Character = () => {
             const result = await response.json()
             if(result && result.length) {
                 setData(result)
+                setFilteredData(result)
                 setLoading(false)
                 console.log(data)
             }
@@ -24,21 +32,35 @@ const Character = () => {
         }
     }
 
-    useEffect(() => {
-        if(!data || data.length === 0) {
-            fetchData()
-        }}, [])
+    const handleSearch = () => {
+        if(input.trim() !== '') {
+            const filteredData = data.filter((item, index) => (
+                item.name.toLowerCase().includes(input.toLowerCase())
+            ))
+            setFilteredData(filteredData)
+            setInput('')
+        } else {
+            setFilteredData(data)
+        }
+    }
  
   return (
-    <div className='grid grid-cols-4 gap-2 p-2'>
+    <div>
+    <div className='flex px-2 text-sm gap-2 mt-4'>
+    <input type='text' placeholder='Find your favorite character…' 
+    className='w-52 p-2 border-gray-400 border-1 rounded-md'
+    value={input} onChange={(e) => setInput(e.target.value)}/>
+    <button className='p-2 bg-green-500 text-gray-800 rounded-md' onClick={handleSearch}>Search</button>
+    </div>
+    <div className='grid grid-cols-4 gap-2 p-2 mt-2'>
         {errorMsg && <p className='text-red-600'>{errorMsg}</p>}
         {loading && <div className='w-screen h-screen flex items-center justify-center'><RingLoader size={150}/> </div>}
         {
-            data.map((item, index) => (
+            filteredData.map((item, index) => (
                 <Card key={index} item={item} />
             ))
         }
-        
+    </div>
     </div>
   )
 }
