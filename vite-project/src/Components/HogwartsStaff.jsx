@@ -3,31 +3,31 @@ import React, { useEffect, useState } from 'react'
 import { FaRegHeart, FaHeart } from 'react-icons/fa'
 
 const characterObject = {
-    'Galatea Merrythought' : '/public/images/ Galatea Merrythought.webp',
-    'Madame Pince' : '/public/images/ Madame Pince.webp',
-    'Pomona Sprout' : '/public/images/ Pomona Sprout.webp',
-    'Severus Snape' : '/public/images/ Severus Snape.webp',
-    'Alastor Moody' : '/public/images/Alastor Moody.jpg',
-    'Albus Dumbledore' : '/public/images/Albus Dumbledore.jpg',
-    'Argus Filch' : '/public/images/Argus Filch.jpeg',
-    'Aurora Sinistra' : '/public/images/Aurora Sinistra.jpg',
-    'Charity Burbage' : '/public/images/Charity Burbage.jpg',
-    'Cuthbert Binns' : '/public/images/Cuthbert Binns.jpg',
-    'Dolores Umbridge' : '/public/images/Dolores Umbridge.webp',
-    'Filius Flitwick' : '/public/images/Filius Flitwick.webp',
-    'Firenze' : '/public/images/Firenze.jpg',
-    'Gilderoy Lockhart' : '/public/images/Gilderoy Lockhart.webp',
-    'Horace Slughorn' : '/public/images/Horace Slughorn.webp',
-    'Madam Hooch' : '/public/images/Madam Hooch.jpg',
-    'Madam Pomfrey' : '/public/images/Madam Pomfrey.webp',
-    'Minerva McGonagall' : '/public/images/Minerva McGonagall.jpg',
-    'Mrs Norris' : '/public/images/Mrs Norris.jpg',
-    'Quirinus Quirrel' : '/public/images/Quirinus Quirrel.jpg',
-    'Remus Lupin' : '/public/images/Remus Lupin.jpg',
-    'Rubeus Hagrid' : '/public/images/Rubeus Hagrid.webp',
-    'Septima Vector' : '/public/images/Septima Vector.jpg',
-    'Sybill Trelawney' : '/public/images/Sybill Trelawney.webp',
-    'Wilhelmina Grubbly-Plank' : '/public/images/Wilhelmina Grubbly-Plank.jpg',
+    'Galatea Merrythought' : '/images/ Galatea Merrythought.webp',
+    'Madame Pince' : '/images/ Madame Pince.webp',
+    'Pomona Sprout' : '/images/ Pomona Sprout.webp',
+    'Severus Snape' : '/images/ Severus Snape.webp',
+    'Alastor Moody' : '/images/Alastor Moody.jpg',
+    'Albus Dumbledore' : '/images/Albus Dumbledore.jpg',
+    'Argus Filch' : '/images/Argus Filch.jpeg',
+    'Aurora Sinistra' : '/images/Aurora Sinistra.jpg',
+    'Charity Burbage' : '/images/Charity Burbage.jpg',
+    'Cuthbert Binns' : '/images/Cuthbert Binns.jpg',
+    'Dolores Umbridge' : '/images/Dolores Umbridge.webp',
+    'Filius Flitwick' : '/images/Filius Flitwick.webp',
+    'Firenze' : '/images/Firenze.jpg',
+    'Gilderoy Lockhart' : '/images/Gilderoy Lockhart.webp',
+    'Horace Slughorn' : '/images/Horace Slughorn.webp',
+    'Madam Hooch' : '/images/Madam Hooch.jpg',
+    'Madam Pomfrey' : '/images/Madam Pomfrey.webp',
+    'Minerva McGonagall' : '/images/Minerva McGonagall.jpg',
+    'Mrs Norris' : '/images/Mrs Norris.jpg',
+    'Quirinus Quirrel' : '/images/Quirinus Quirrel.jpg',
+    'Remus Lupin' : '/images/Remus Lupin.jpg',
+    'Rubeus Hagrid' : '/images/Rubeus Hagrid.webp',
+    'Septima Vector' : '/images/Septima Vector.jpg',
+    'Sybill Trelawney' : '/images/Sybill Trelawney.webp',
+    'Wilhelmina Grubbly-Plank' : '/images/Wilhelmina Grubbly-Plank.jpg',
 }
 
 const HogwartsStaff = () => { 
@@ -37,7 +37,14 @@ const [loading, setLoading] = useState(false)
 const [errorMsg, setErrorMsg] = useState(null)
 const [input, setInput] = useState('')
 const [filteredData, setFilteredData] = useState([])
-const [favoriteStaff, setFavoriteStaff] = useState([])
+const [favoriteStaff, setFavoriteStaff] = useState(() => {
+    try {
+        return JSON.parse(localStorage.getItem('favoriteCharacter')) || [];
+    } catch (error) {
+        console.log("Error parsing favoriteCharacter from localStorage:", error);
+        return [];
+    }
+});
 
 
 const fetchData = async () => {
@@ -63,6 +70,12 @@ useEffect(() => {
         fetchData()
     }}, [])
 
+    useEffect(() => {
+        if (favoriteStaff.length > 0) {
+            localStorage.setItem('favoriteCharacter', JSON.stringify(favoriteStaff));
+        }
+    }, [favoriteStaff]);
+
     const handleSearch = () => {
         if(input.trim() !== '') {
             const newData = data.filter((item, index) => (
@@ -73,6 +86,12 @@ useEffect(() => {
         } else {
             setFilteredData(data)
         }
+    }
+
+    const toggleFavorite = (staffName) => {
+        setFavoriteStaff(prev => 
+            prev.includes(staffName) ? prev.filter((item) => item !== staffName) : [...prev, staffName]
+        )
     }
 
 return (
@@ -91,7 +110,9 @@ return (
             <div className='border p-4 bg-gray-100 rounded-lg shadow-lg'>
             <h2 className='text-sm'>{item.name}</h2>
             <img src={characterObject[item.name]} alt={item.name} className='object-center rounded-md size-96'/>
-            <button className={favoriteStaff ? 'p-2 text-red-600' : 'p-2 text-gray-600'}>{favoriteStaff ? <FaHeart/> : <FaRegHeart/> }</button>
+            <button 
+            className={favoriteStaff.includes(item.name) ? 'p-2 text-red-600' : 'p-2 text-gray-600'}
+            onClick={() => toggleFavorite(item.name)}>{favoriteStaff.includes(item.name) ? <FaHeart/> : <FaRegHeart/>}</button>
           </div>
         ))}   
 </div>
