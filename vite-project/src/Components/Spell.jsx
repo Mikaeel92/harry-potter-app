@@ -1,6 +1,6 @@
 import { RingLoader } from 'react-spinners'
-import SpellCard from './SpellCard'
 import React, { useEffect, useState } from 'react'
+import { FaRegHeart, FaHeart } from 'react-icons/fa'
 
 const Spell = () => {
     const [data, setData] = useState([]) 
@@ -8,6 +8,14 @@ const Spell = () => {
     const [errorMsg, setErrorMsg] = useState(null)
     const [filteredData, setFilteredData] = useState([])
     const [input, setInput] = useState('')
+    const [favoriteSpell, setFavoriteSpell] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('FavoriteSpell') || [])
+        } catch (error) {
+            console.log(error)
+            return []
+        }
+    })
 
     const fetchData = async () => {
         try {
@@ -39,9 +47,21 @@ const Spell = () => {
     }
 
     useEffect(() => {
+        if(favoriteSpell.length > 0) {
+           localStorage.setItem('FavoriteSpell', JSON.stringify(favoriteSpell))
+        }
+    }, [favoriteSpell])
+
+    useEffect(() => {
         if(!data || data.length === 0) {
             fetchData()
         }}, [])
+
+        const toggleSpell = (spellName) => {
+            setFavoriteSpell(prev => prev.includes(spellName) ? favoriteSpell.filter((item) => (
+                item !== spellName
+            )) : [...prev, spellName])
+        }
  
   return (
     <div>
@@ -56,12 +76,15 @@ const Spell = () => {
         {loading && <div className='w-screen h-screen flex items-center justify-center'><RingLoader size={150}/> </div>}
         {
             filteredData.map((item, index) => (
-                <SpellCard key={index} item={item} />
+                <div key={index} className='border p-4 bg-gray-100 rounded-lg shadow-lg'>
+                <h2 className='text-sm'>{item.name}</h2>
+                <p className='text-sm text-gray-700'>{item.description}</p>
+                <button 
+                onClick={() => toggleSpell(item.name)}
+                className={favoriteSpell.includes(item.name) ? 'text-red-600' : 'text-gray-600'}>{favoriteSpell.includes(item.name) ? <FaHeart size={30}/> : <FaRegHeart size={30}/>}</button>
+              </div>
             ))}  
     </div>
-    </div>
-
-  )
-}
+    </div>)}
 
 export default Spell

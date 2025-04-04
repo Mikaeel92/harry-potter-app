@@ -106,8 +106,8 @@ return (
     {errorMsg && <p className='text-red-600'>{errorMsg}</p>}
     {loading && <div className='w-screen h-screen flex items-center justify-center'><RingLoader size={150}/> </div>}
     {
-        filteredData.map((item) => (
-            <div className='border p-4 bg-gray-100 rounded-lg shadow-lg'>
+        filteredData.map((item, index) => (
+            <div key={index} className='border p-4 bg-gray-100 rounded-lg shadow-lg'>
             <h2 className='text-sm'>{item.name}</h2>
             <img src={characterObject[item.name]} alt={item.name} className='object-center rounded-md size-96'/>
             <button 
