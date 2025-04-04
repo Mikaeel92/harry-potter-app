@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { RingLoader } from 'react-spinners'
-import Card from './Card'
+import { FaRegHeart, FaHeart } from 'react-icons/fa'
 
 const Character = () => {
 
@@ -9,11 +9,25 @@ const Character = () => {
     const [errorMsg, setErrorMsg] = useState(null)
     const [input, setInput] = useState('')
     const [filteredData, setFilteredData] = useState([])
+    const [favoritCharacter, setFavoriteCharacter] = useState(() => {
+        try {
+           return JSON.parse(localStorage.getItem('favoriteCharacter')) || []
+        } catch (error) {
+            console.log(error)
+            return []
+        }
+    })
 
     useEffect(() => {
         if(!data || data.length === 0) {
             fetchData()
         }}, [])
+
+    useEffect(() => {
+        if(favoritCharacter.length > 0) {
+            localStorage.setItem('favoriteCharacter', JSON.stringify(favoritCharacter))
+        }
+    }, [favoritCharacter])
 
     const fetchData = async () => {
         try {
@@ -44,6 +58,14 @@ const Character = () => {
         }
     }
  
+    const toggleCharacter = (charName) => {
+        setFavoriteCharacter(prev => 
+            prev.includes(charName) ? favoritCharacter.filter((item) => (
+                item !== charName
+            )) : [...prev, charName]
+        )
+    }
+
   return (
     <div>
     <div className='flex px-2 text-sm gap-2 mt-4'>
@@ -57,7 +79,14 @@ const Character = () => {
         {loading && <div className='w-screen h-screen flex items-center justify-center'><RingLoader size={150}/> </div>}
         {
             filteredData.map((item, index) => (
-                <Card key={index} item={item} />
+                <div key={index} className='border p-4 bg-gray-100 rounded-lg shadow-lg'>
+                <p className='text-sm'>
+                    {item.name}
+                </p>
+                <button 
+                onClick={() => toggleCharacter(item.name)}
+                className={favoritCharacter.includes(item.name) ? 'text-red-600' : 'text-gray-600'}>{favoritCharacter.includes(item.name) ? <FaHeart size={30}/> : <FaRegHeart size={30}/>}</button>
+            </div>
             ))
         }
     </div>
