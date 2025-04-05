@@ -39,9 +39,9 @@ const [input, setInput] = useState('')
 const [filteredData, setFilteredData] = useState([])
 const [favoriteStaff, setFavoriteStaff] = useState(() => {
     try {
-        return JSON.parse(localStorage.getItem('favoriteCharacter')) || [];
+        return JSON.parse(localStorage.getItem('favoriteStaff')) || [];
     } catch (error) {
-        console.log("Error parsing favoriteCharacter from localStorage:", error);
+        console.log("Error parsing favoriteStafff from localStorage:", error);
         return [];
     }
 });
@@ -72,13 +72,13 @@ useEffect(() => {
 
     useEffect(() => {
         if (favoriteStaff.length > 0) {
-            localStorage.setItem('favoriteCharacter', JSON.stringify(favoriteStaff));
+            localStorage.setItem('favoriteStaff', JSON.stringify(favoriteStaff));
         }
     }, [favoriteStaff]);
 
     const handleSearch = () => {
         if(input.trim() !== '') {
-            const newData = data.filter((item, index) => (
+            const newData = data.filter((item) => (
                 item.name.toLowerCase().includes(input.toLowerCase())
             ))
             setFilteredData(newData)
