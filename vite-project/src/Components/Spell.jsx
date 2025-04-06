@@ -10,7 +10,7 @@ const Spell = () => {
     const [input, setInput] = useState('')
     const [favoriteSpell, setFavoriteSpell] = useState(() => {
         try {
-            return JSON.parse(localStorage.getItem('FavoriteSpell') || [])
+            return JSON.parse(localStorage.getItem('favoriteSpell') || [])
         } catch (error) {
             console.log(error)
             return []
@@ -48,7 +48,7 @@ const Spell = () => {
 
     useEffect(() => {
         if(favoriteSpell.length > 0) {
-           localStorage.setItem('FavoriteSpell', JSON.stringify(favoriteSpell))
+           localStorage.setItem('favoriteSpell', JSON.stringify(favoriteSpell))
         }
     }, [favoriteSpell])
 
