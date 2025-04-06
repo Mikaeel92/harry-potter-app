@@ -2,30 +2,34 @@ import React, { useState } from 'react'
 
 const MyFavorites = () => {
 
-    const [favoriteCharacter, setFavoriteCharacter] = useState(() => {
-        try {
-           return JSON.parse(localStorage.getItem('favoriteCharacter')) || []
-        } catch (error) {
-            console.log(error)
-            return []
-        }
-    })
-    const [favoriteSpell, setFavoriteSpell] = useState(() => {
-        try {
-            return JSON.parse(localStorage.getItem('favoriteSpell')) || []
-        } catch (error) {
-            console.log(error)
-            return []
-        }
-    })
-    const [favoriteStaff, setFavoriteStaff] = useState(() => {
-        try {
-            return JSON.parse(localStorage.getItem('favoriteStaff')) || []
-        } catch (error) {
-            console.log(error)
-            return []
-        }
-    })
+    // const [favoriteCharacter, setFavoriteCharacter] = useState(() => {
+    //     try {
+    //        return JSON.parse(localStorage.getItem('favoriteCharacter')) || []
+    //     } catch (error) {
+    //         console.log(error)
+    //         return []
+    //     }
+    // })
+    // const [favoriteSpell, setFavoriteSpell] = useState(() => {
+    //     try {
+    //         return JSON.parse(localStorage.getItem('favoriteSpell')) || []
+    //     } catch (error) {
+    //         console.log(error)
+    //         return []
+    //     }
+    // })
+    // const [favoriteStaff, setFavoriteStaff] = useState(() => {
+    //     try {
+    //         return JSON.parse(localStorage.getItem('favoriteStaff')) || []
+    //     } catch (error) {
+    //         console.log(error)
+    //         return []
+    //     }
+    // })
+
+    const favoriteCharacter = JSON.parse(localStorage.getItem('favoriteCharacter')) || []
+    const favoriteSpell = JSON.parse(localStorage.getItem('favoriteSpell')) || []
+    const favoriteStaff = JSON.parse(localStorage.getItem('favoriteStaff')) || []
 
     console.log(favoriteStaff)
     console.log(favoriteSpell)
